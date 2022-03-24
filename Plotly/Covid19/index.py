@@ -33,8 +33,7 @@ app.layout = html.Div([
     html.Div([
         html.Div([
             html.Img(src=app.get_asset_url('ethanlee.png'),
-                     id='corona-image',
-                     style={'height':'60px', 'width' : 'auth', 'margin-bottom' : '25px'})
+                     id='corona-image')
         ], className='one-third column'),
         
         html.Div([
@@ -43,6 +42,10 @@ app.layout = html.Div([
                 html.H5('Track Covid-19 Cases')
             ])
         ], className='one-half column', id='title'),
+        
+        html.Div([
+            html.H6('Last Updated: ' + str(covid_data['date'].iloc[-1].strftime('%B %d, %Y') + ' 00:01 (UTC)'))
+        ], className='one-third column', id='title1')
         
     ], id='header', className='row flex-display')
 ], id='main-container')

@@ -533,12 +533,24 @@ hr {
 
 /* Larger than phablet (also point when grid becomes active) */
 @media (max-width: 550px) {
+  .flex-display {
+    display: block !important;
+  }
   #corona-image {
     margin-bottom: 0px !important;
     height: 45px !important;
   }
   #title {
     margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 2.5rem;
+  }
+  h5 {
+    font-size: 2rem;
+  }
+  h6 {
+    font-size: 1.25rem;
   }
 }
 

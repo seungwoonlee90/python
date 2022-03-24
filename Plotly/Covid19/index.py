@@ -8,8 +8,14 @@ url_confirmed = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/maste
 url_deaths = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'
 url_recovered = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
 
-confirmed = pd.read_csv(url_confirmed)
-deaths = pd.read_csv(url_deaths)
-recovered = pd.read_csv(url_recovered)
+def data_unpivot(url, value_name) :
+    df = pd.read_csv(url)
+    date = df.columns[4:]
+    total = df.melt(id_vars=['Province/State', 'Country/Region', 'Lat', 'Long'], value_vars=date, var_name = 'date', value_name = value_name)
+    return total
 
-print('url_recovered')
+confirmed = data_unpivot(url_confirmed, 'confirmed')
+deaths = data_unpivot(url_deaths, 'deaths')
+recovered = data_unpivot(url_recovered, 'recovered')
+
+print(confirmed.tail())

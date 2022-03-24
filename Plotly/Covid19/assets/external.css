@@ -532,7 +532,14 @@ hr {
 }
 
 /* Larger than phablet (also point when grid becomes active) */
-@media (min-width: 550px) {
+@media (max-width: 550px) {
+  #corona-image {
+    margin-bottom: 0px !important;
+    height: 45px !important;
+  }
+  #title {
+    margin-bottom: 10px;
+  }
 }
 
 /* Larger than tablet */

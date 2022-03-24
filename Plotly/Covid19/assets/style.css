@@ -1,6 +1,12 @@
 body {
-  background-color: #192444;
+  background: linear-gradient(
+    to bottom,
+    #2c5364,
+    #203a43,
+    #0f2027
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   margin: 5%;
+  height: 100vh;
 }
 
 #header {
@@ -25,7 +31,7 @@ body {
 
 #title {
   text-align: center;
-  color: white;
+  color: #adefd1;
 }
 
 #title h5 {
@@ -33,5 +39,25 @@ body {
 }
 
 #title1 {
-  color: orange;
+  color: #adefd1;
+}
+
+.card-container {
+  border-radius: 5px;
+  background-color: #00203f;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 4px 4px 4px dimgray;
+}
+
+.card-container h6 {
+  text-align: center;
+  color: #adefd1;
+}
+
+.card-container P {
+  text-align: center;
+  color: #adefd1;
+  font-size: 40;
 }

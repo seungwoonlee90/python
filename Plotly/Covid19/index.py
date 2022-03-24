@@ -27,3 +27,11 @@ covid_data = covid_data.merge(recovered, how='left', on=['Province/State', 'Coun
 covid_data['date'] = pd.to_datetime(covid_data['date'])
 covid_data['recovered'] = covid_data['recovered'].fillna(0)
 covid_data['active'] = covid_data['confirmed'] - covid_data['death'] - covid_data['recovered']
+
+app = dash.Dash(__name__, )
+app.layout = html.Div([
+    
+])
+
+if __name__ == '__main__' :
+    app.run_server(debug=True)

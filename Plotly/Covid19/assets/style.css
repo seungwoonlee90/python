@@ -61,3 +61,31 @@ body {
   color: #adefd1;
   font-size: 40;
 }
+
+.create-container {
+  border-radius: 5px;
+  background-color: #00203f;
+  margin: 18px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 4px 4px 4px dimgray;
+}
+
+.create-container P {
+  color: #adefd1;
+}
+
+.fix-label {
+  font-size: 20px;
+  margin: 0;
+  margin-bottom: 0px;
+  padding: 10px;
+  padding-bottom: 0px;
+  width: calc(100% - 40px);
+}
+
+.dcc-components {
+  margin: 0;
+  padding: 5px;
+  width: calc(100% - 40px);
+}

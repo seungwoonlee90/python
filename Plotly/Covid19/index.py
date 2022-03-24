@@ -29,7 +29,7 @@ covid_data['recovered'] = covid_data['recovered'].fillna(0)
 covid_data['active'] = covid_data['confirmed'] - covid_data['death'] - covid_data['recovered']
 covid_data1 = covid_data.groupby(['date'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
 
-app = dash.Dash(__name__, )
+app = dash.Dash(__name__, title='Covid-19')
 app.layout = html.Div([
     html.Div([
         html.Div([
@@ -45,7 +45,7 @@ app.layout = html.Div([
         ], className='one-half column', id='title'),
         
         html.Div([
-            html.H6('Last Updated: ' + str(covid_data['date'].iloc[-1].strftime('%B %d, %Y') + ' 00:01 (UTC)'))
+            html.H6('Last Updated: ' + str(covid_data['date'].iloc[-1].strftime('%B %d, %Y') + '(UTC +1)'))
         ], className='one-third column', id='title1')
     ], id='header', className='row flex-display'),
     
@@ -57,7 +57,7 @@ app.layout = html.Div([
         ], className='card-container three columns'),
         
         html.Div([
-            html.H6(children='Global deths'),
+            html.H6(children='Global deaths'),
             html.P(f"{covid_data1['death'].iloc[-1]:,.0f}"),
             html.P(f"New : {round(covid_data1['death'].iloc[-1] - covid_data1['death'].iloc[-2], 3):,.0f} 🔺")
         ], className='card-container three columns'),
@@ -65,7 +65,7 @@ app.layout = html.Div([
         html.Div([
             html.H6(children='Global recovered'),
             html.P(f"{covid_data1['recovered'].iloc[-1]:,.0f}"),
-            html.P(f"New : {round(covid_data1['recovered'].iloc[-1] - covid_data1['recovered'].iloc[-2], 3):,.0f} 🔺")
+            html.P(f"New : {round(covid_data1['recovered'].iloc[-1] - covid_data1['recovered'].iloc[-2], 3):,.0f} -")
         ], className='card-container three columns'),
         
         html.Div([
@@ -73,10 +73,54 @@ app.layout = html.Div([
             html.P(f"{covid_data1['active'].iloc[-1]:,.0f}"),
             html.P(f"New : {round(covid_data1['active'].iloc[-1] - covid_data1['active'].iloc[-2], 3):,.0f} 🔺")
         ], className='card-container three columns'),
-    ], className='row flex display')
+    ], className='row flex-display'),
     
+    html.Div([
+        html.Div([
+            html.P('Select Country', className='fix-label'),
+            dcc.Dropdown(id='w_countries',
+                         multi=False,
+                         searchable=True,
+                         value='Korea, South',
+                         placeholder='Select Countries',
+                         options=[{'label' : c, 'value' : c} for c in (covid_data['Country/Region'].unique())], className='dcc-components'),
+            html.P('New Cases: ' + str(covid_data['date'].iloc[-1].strftime('%B %d, %Y')), className='fix-label'),
+            dcc.Graph(id='confirmed', config={'displayModeBar' : False}, className='dcc-components', style={'margin-top' : '20px'})
+        ], className='create-container three columns')
+    ], 'row flex-display')
     
 ], id='main-container')
+
+@app.callback(Output('confirmed', 'figure'),
+              [Input('w_countries', 'value')])
+def update_confirmed(w_countries):
+    covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
+    value_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['confirmed'].iloc[-1] - covid_data2[covid_data2['Country/Region'] == w_countries]['confirmed'].iloc[-2]
+    delta_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['confirmed'].iloc[-2] - covid_data2[covid_data2['Country/Region'] == w_countries]['confirmed'].iloc[-3]
+    return {
+        'data' : [go.Indicator(
+            mode = 'number+delta',
+            value = value_confirmed,
+            delta = {'reference' : delta_confirmed,
+                     'position' : 'right',
+                     'valueformat' : ',g',
+                     'relative' : False,
+                     'font' : {'size' : 15}},
+            number = {'valueformat' : ',',
+                      'font' : {'size' : 20}},
+            domain = {'y' : [0, 1], 'x' : [0, 1]}
+        )],
+        'layout' : go.Layout(
+            title = {'text' : 'New Confirmed',
+                     'y' : 0.95,
+                     'xanchor' : 'center',
+                     'yanchor' : 'top'},
+            height = 100,
+            font = dict(color='white'),
+            paper_bgcolor='#00203f',
+            plot_bgcolor='#00203f',
+        )
+    }
 
 if __name__ == '__main__' :
     app.run_server(debug=True)

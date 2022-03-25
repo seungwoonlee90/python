@@ -89,8 +89,13 @@ app.layout = html.Div([
             dcc.Graph(id='death', config={'displayModeBar' : False}, className='dcc-components', style={'margin-top' : '20px'}),
             dcc.Graph(id='recovered', config={'displayModeBar' : False}, className='dcc-components', style={'margin-top' : '20px'}),
             dcc.Graph(id='active', config={'displayModeBar' : False}, className='dcc-components', style={'margin-top' : '20px'}),
-        ], className='create-container three columns')
-    ], 'row flex-display')
+        ], className='create-container three columns'),
+        
+        html.Div([
+            dcc.Graph(id='pie_chart', config={'displayModeBar' : 'hover'}),
+        ], className = 'create-container four columns')
+        
+    ], 'row flex-display'),
     
 ], id='main-container')
 
@@ -127,7 +132,7 @@ def update_confirmed(w_countries):
     
 @app.callback(Output('death', 'figure'),
               [Input('w_countries', 'value')])
-def update_confirmed(w_countries):
+def update_death(w_countries):
     covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
     value_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['death'].iloc[-1] - covid_data2[covid_data2['Country/Region'] == w_countries]['death'].iloc[-2]
     delta_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['death'].iloc[-2] - covid_data2[covid_data2['Country/Region'] == w_countries]['death'].iloc[-3]
@@ -149,7 +154,7 @@ def update_confirmed(w_countries):
                      'y' : 0.95,
                      'xanchor' : 'center',
                      'yanchor' : 'top'},
-            height = 100,
+            height = 45,
             font = dict(color='orange'),
             paper_bgcolor='#00203f',
             plot_bgcolor='#00203f',
@@ -158,7 +163,7 @@ def update_confirmed(w_countries):
     
 @app.callback(Output('recovered', 'figure'),
               [Input('w_countries', 'value')])
-def update_confirmed(w_countries):
+def update_recovered(w_countries):
     covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
     value_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['recovered'].iloc[-1] - covid_data2[covid_data2['Country/Region'] == w_countries]['recovered'].iloc[-2]
     delta_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['recovered'].iloc[-2] - covid_data2[covid_data2['Country/Region'] == w_countries]['recovered'].iloc[-3]
@@ -189,7 +194,7 @@ def update_confirmed(w_countries):
     
 @app.callback(Output('active', 'figure'),
               [Input('w_countries', 'value')])
-def update_confirmed(w_countries):
+def update_active(w_countries):
     covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
     value_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['active'].iloc[-1] - covid_data2[covid_data2['Country/Region'] == w_countries]['active'].iloc[-2]
     delta_confirmed = covid_data2[covid_data2['Country/Region'] == w_countries]['active'].iloc[-2] - covid_data2[covid_data2['Country/Region'] == w_countries]['active'].iloc[-3]
@@ -217,6 +222,39 @@ def update_confirmed(w_countries):
             plot_bgcolor='#00203f',
         )
     }
+
+@app.callback(Output('pie_chart', 'figure'),
+              [Input('w_countries', 'value')])
+def update_graph(w_countries):
+    covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
+    confirmed_value = covid_data2[covid_data2['Country/Region'] == w_countries]['confirmed'].iloc[-1]
+    death_value = covid_data2[covid_data2['Country/Region'] == w_countries]['death'].iloc[-1]
+    recovered_value = covid_data2[covid_data2['Country/Region'] == w_countries]['recovered'].iloc[-1]
+    active_value = covid_data2[covid_data2['Country/Region'] == w_countries]['active'].iloc[-1]
+    colors = ['white', 'orange', 'green', 'pink']
+    
+    return {
+        'data' : [go.Pie(
+            labels = ['Confirmed', 'Death', 'Recovered', 'Active'],
+            values = [confirmed_value, death_value, recovered_value, active_value],
+            marker = dict(colors = colors),
+            hoverinfo = 'label+value+percent',
+            textinfo = 'label+value',
+            hole = .7
+        )],
+        'layout' : go.Layout(
+            title = {'text' : 'Total Cases:' + (w_countries),
+                     'y' : 0.95,
+                     'xanchor' : 'center',
+                     'yanchor' : 'top'},
+            font = dict(color='#adefd1'),
+            titlefont = dict(size=20),
+            paper_bgcolor='#00203f',
+            plot_bgcolor='#00203f',
+            legend = {'orientation' : 'h', 'xanchor' : 'center', 'x' : 0.5, 'y' : -0.7}
+        )
+    }
+
 
 if __name__ == '__main__' :
     app.run_server(debug=True)

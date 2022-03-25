@@ -209,7 +209,7 @@ def update_active(w_countries):
                      'font' : {'size' : 15}},
             number = {'valueformat' : ',',
                       'font' : {'size' : 20}},
-            domain = {'y' : [0, 1], 'x' : [0, 1]}
+            domain = {'y' : [0, 1], 'x' : [0, 1]},
         )],
         'layout' : go.Layout(
             title = {'text' : 'New active',
@@ -240,7 +240,8 @@ def update_graph(w_countries):
             marker = dict(colors = colors),
             hoverinfo = 'label+value+percent',
             textinfo = 'label+value',
-            hole = .7
+            hole = .7,
+            rotation = 45,
         )],
         'layout' : go.Layout(
             title = {'text' : 'Total Cases:' + (w_countries),

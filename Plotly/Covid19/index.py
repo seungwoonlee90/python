@@ -93,7 +93,11 @@ app.layout = html.Div([
         
         html.Div([
             dcc.Graph(id='pie_chart', config={'displayModeBar' : 'hover'}),
-        ], className = 'create-container four columns')
+        ], className = 'create-container four columns'),
+        
+        html.Div([
+            dcc.Graph(id='line_chart', config={'displayModeBar' : 'hover'}),
+        ], className = 'create-container five columns')
         
     ], 'row flex-display'),
     
@@ -256,6 +260,38 @@ def update_graph(w_countries):
         )
     }
 
+@app.callback(Output('line_chart', 'figure'),
+              [Input('w_countries', 'value')])
+def update_graph(w_countries):
+    covid_data2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
+    covid_data3 = covid_data2[covid_data2['Country/Region'] == w_countries][['Country/Region', 'date', 'confirmed']].reset_index()
+    covid_data3['daily confirmed'] = covid_data3['confirmed'] - covid_data3['confirmed'].shift(1)
+    return {
+        'data' : [go.Bar(
+            x = covid_data3['date'].tail(30),
+            y = covid_data3['daily confirmed'].tail(30),
+            name = 'Daily Confirmed Cases',
+            marker = dict(color='orange'),
+            hoverinfo = 'text',
+            hovertext =
+            '<b>Date</b>:' + (covid_data3['date'].tail(30).astype(str)) + '<br />'
+            '<b>Daily Confirmed</b>:' + (covid_data3['daily confirmed'].tail(30).astype(str)) + '<br />'
+            
+        )],
+        'layout' : go.Layout(
+            title = {'text' : 'Total Cases:' + (w_countries),
+                     'y' : 0.95,
+                     'xanchor' : 'center',
+                     'yanchor' : 'top'},
+            font = dict(color='#adefd1'),
+            titlefont = dict(size=20),
+            paper_bgcolor='#00203f',
+            plot_bgcolor='#00203f',
+            legend = {'orientation' : 'h', 'xanchor' : 'center', 'x' : 0.5, 'y' : -0.7},
+            xaxis = dict(title = '<b>Date</b>', color='white', showline=True, showgrid=True),
+            yaxis = dict(title = '<b>Daily Confirmed</b>', color='white', showline=True, showgrid=True)
+        )
+    }
 
 if __name__ == '__main__' :
     app.run_server(debug=True)

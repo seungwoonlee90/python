@@ -28,6 +28,8 @@ covid_data['date'] = pd.to_datetime(covid_data['date'])
 covid_data['recovered'] = covid_data['recovered'].fillna(0)
 covid_data['active'] = covid_data['confirmed'] - covid_data['death'] - covid_data['recovered']
 covid_data1 = covid_data.groupby(['date'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
+covid_datalist = covid_data[['Country/Region', 'Lat', 'Long']]
+dict_of_locations = covid_datalist.set_index('Country/Region')[['Lat', 'Long']].T.to_dict('dict')
 
 app = dash.Dash(__name__, title='Covid-19')
 app.layout = html.Div([
@@ -97,10 +99,14 @@ app.layout = html.Div([
         
         html.Div([
             dcc.Graph(id='line_chart', config={'displayModeBar' : 'hover'}),
-        ], className = 'create-container five columns')
+        ], className = 'create-container five columns'),
         
     ], 'row flex-display'),
     
+    html.Div([
+        dcc.Graph(id='map_chart', config={'displayModeBar' : 'hover'}, className = 'create-container twelve columns'),
+    ], className = 'row flex-display')
+
 ], id='main-container')
 
 @app.callback(Output('confirmed', 'figure'),
@@ -290,6 +296,51 @@ def update_graph(w_countries):
             legend = {'orientation' : 'h', 'xanchor' : 'center', 'x' : 0.5, 'y' : -0.7},
             xaxis = dict(title = '<b>Date</b>', color='white', showline=True, showgrid=True),
             yaxis = dict(title = '<b>Daily Confirmed</b>', color='white', showline=True, showgrid=True)
+        )
+    }
+
+@app.callback(Output('map_chart', 'figure'),
+              [Input('w_countries', 'value')])
+def update_graph(w_countries):
+    covid_data4 = covid_data.groupby(['Lat', 'Long', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].max().reset_index()
+    covid_data5 = covid_data4[covid_data4['Country/Region'] == w_countries]
+    
+    if w_countries :
+        zoom_lat = dict_of_locations[w_countries]['Lat']
+        zoom_long = dict_of_locations[w_countries]['Long']
+    
+    return {
+        'data' : [go.Scattermapbox(
+            lon = covid_data5['Long'],
+            lat = covid_data5['Lat'],
+            mode = 'markers',
+            marker = go.scattermapbox.Marker(size=covid_data5['confirmed']/5000,
+                                             color = covid_data5['confirmed'],
+                                             colorscale='HSV',
+                                             showscale=False,
+                                             sizemode='area',
+                                             opacity=0.3),
+            hoverinfo = 'text',
+            hovertext =
+            '<b>Country/Region</b>:' + (covid_data5['Country/Region'].astype(str)) + '<br />' +
+            '<b>Confirmed</b>:' + (covid_data5['confirmed'].astype(str)) + '<br />' +
+            '<b>Death</b>:' + (covid_data5['death'].astype(str)) + '<br />' +
+            '<b>Recovered</b>:' + (covid_data5['recovered'].astype(str)) + '<br />' +
+            '<b>Active</b>:' + (covid_data5['active'].astype(str)) + '<br />'
+            
+        )],
+        'layout' : go.Layout(
+            mapbox=dict(
+                accesstoken='#personal key',
+                center = go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_long),
+                style = 'dark',
+                zoom = 2
+            ),
+            margin=dict(r=0, l=0, t=0, b=0),
+            autosize=True,
+            hovermode='x',
+            paper_bgcolor='#00203f',
+            plot_bgcolor='#00203f',
         )
     }
 

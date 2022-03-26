@@ -6,7 +6,7 @@ import pandas as pd
 
 df = pd.read_csv('./modified_globalterrorismdb_0718dist.csv')
 
-app = dash.Dash(__name__, title='terrorism')
+app = dash.Dash(__name__, title="terrorism")
 app.layout = html.Div([
     html.Div([
         html.Div([
@@ -14,9 +14,20 @@ app.layout = html.Div([
                 html.H3('Global Terrorism Database'),
                 html.H5('1970 - 2017')
             ])
-        ], id='title', className='six column')
-    ], id='header', className='row flex-display')
-], id='main-container')
+        ], id="title")
+    ], id="header"),
+    html.Div([
+        html.Div([
+            html.P("Select Region")
+        ], className="create_container"),
+        html.Div([
+            html.P("box 2")
+        ], className="create_container"),
+        html.Div([
+            html.P("box 3")
+        ], className="create_container")
+    ], id="second-container")
+], id="main-container")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run_server(debug=True)

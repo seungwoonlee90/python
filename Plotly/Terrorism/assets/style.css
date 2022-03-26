@@ -1,6 +1,7 @@
 body {
   background-color: #272b30;
   color: white;
+  font-size: 20px;
 }
 
 #main-container {
@@ -11,4 +12,21 @@ body {
 #header {
   margin-bottom: 25px;
   text-align: center;
+}
+
+.create_container {
+  border-radius: 5px;
+  background-color: #010915;
+  margin: 18px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px #010915;
+  width: 33%;
+  text-align: center;
+}
+
+#second-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

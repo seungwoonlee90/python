@@ -35,9 +35,28 @@ app.layout = html.Div([
                          options=[], className="dropdown")
         ], className="create_container"),
         html.Div([
-            html.P("box 3")
+            html.P("Select Year"),
+            dcc.RangeSlider(id='select_years',
+                            min=1970,
+                            max=2017,
+                            step=1,
+                            tooltip={"placement": "bottom",
+                                     "always_visible": True},
+                            dots=False,
+                            marks=None,
+                            value=[2010, 2017])
         ], className="create_container")
-    ], id="second-container")
+    ], id="second-container"),
+    html.Div([
+        html.Div([
+            dcc.Graph(id='bar_chart', config={'displayModeBar': 'hover'})
+
+        ], className="create_container two"),
+        html.Div([
+
+        ], className="create_container two"),
+
+    ], id="third-container")
 ], id="main-container")
 
 

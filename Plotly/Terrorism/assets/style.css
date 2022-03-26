@@ -14,7 +14,8 @@ body {
   text-align: center;
 }
 
-#second-container {
+#second-container,
+#third-container {
   display: flex;
   justify-content: center;
 }
@@ -25,9 +26,13 @@ body {
   margin: 18px;
   padding: 15px;
   box-shadow: 2px 2px 2px #010915;
-  height: 10vh;
   width: 33%;
   text-align: center;
+  display: block;
+}
+
+.two {
+  width: 50%;
 }
 
 .dropdown {
@@ -37,10 +42,12 @@ body {
 }
 
 @media screen and (max-width: 500px) {
-  #second-container {
+  #second-container,
+  #third-container {
     display: block !important;
   }
-  .create_container {
+  .create_container,
+  .two {
     width: 85%;
   }
 }

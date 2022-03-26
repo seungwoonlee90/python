@@ -14,19 +14,33 @@ body {
   text-align: center;
 }
 
+#second-container {
+  display: flex;
+  justify-content: center;
+}
+
 .create_container {
   border-radius: 5px;
   background-color: #010915;
   margin: 18px;
   padding: 15px;
-  position: relative;
   box-shadow: 2px 2px 2px #010915;
+  height: 10vh;
   width: 33%;
   text-align: center;
 }
 
-#second-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.dropdown {
+  color: black;
+  margin: 0;
+  padding: 5px;
+}
+
+@media screen and (max-width: 500px) {
+  #second-container {
+    display: block !important;
+  }
+  .create_container {
+    width: 85%;
+  }
 }

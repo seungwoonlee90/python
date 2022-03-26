@@ -1,0 +1,8 @@
+body {
+  background-color: bisque;
+}
+
+#main-container {
+  display: flex;
+  flex-direction: column;
+}

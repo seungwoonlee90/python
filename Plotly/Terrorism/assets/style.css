@@ -1,8 +1,14 @@
 body {
-  background-color: bisque;
+  background-color: #272b30;
+  color: white;
 }
 
 #main-container {
   display: flex;
   flex-direction: column;
+}
+
+#header {
+  margin-bottom: 25px;
+  text-align: center;
 }

@@ -1,3 +1,4 @@
+import config
 import dash
 from dash import html, dcc
 from dash.dependencies import Input, Output
@@ -211,7 +212,7 @@ def map(w_region, w_country, select_year):
         )],
         'layout': go.Layout(
             mapbox=dict(
-                accesstoken='#personal key',
+                accesstoken=config.api_key,
                 center=go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_long),
                 style='dark',
                 zoom=5

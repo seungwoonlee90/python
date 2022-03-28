@@ -134,5 +134,41 @@ def select(w_region, w_country, select_year):
     }
 
 
+@app.callback(Output('pie_chart', 'figure'),
+              [Input('w_region', 'value')],
+              [Input('w_country', 'value')],
+              [Input('select_years', 'value')])
+def select(w_region, w_country, select_year):
+    terr2 = df.groupby(['region_txt', 'country_txt', 'iyear'])[
+        ['nkill', 'nwound', 'attacktype1']].sum().reset_index()
+    attack_value = terr2[(terr2['region_txt'] == w_region) & (terr2['country_txt'] == w_country) & (
+        terr2['iyear'] >= select_year[0]) & (terr2['iyear'] <= select_year[1])]['attacktype1'].sum()
+    inured_value = terr2[(terr2['region_txt'] == w_region) & (terr2['country_txt'] == w_country) & (
+        terr2['iyear'] >= select_year[0]) & (terr2['iyear'] <= select_year[1])]['nwound'].sum()
+    death_value = terr2[(terr2['region_txt'] == w_region) & (terr2['country_txt'] == w_country) & (
+        terr2['iyear'] >= select_year[0]) & (terr2['iyear'] <= select_year[1])]['nkill'].sum()
+    colors = ['red', 'orange', '#FF00FF']
+    return {
+        'data': [go.Pie(
+            labels=['Total_Attack', 'Total_Injured', 'Total_Death'],
+            values=[attack_value, inured_value, death_value],
+            marker=dict(colors=colors),
+            hoverinfo='label+value+percent',
+            textinfo='label+value',
+            rotation=45,
+        )],
+        'layout': go.Layout(
+            title={'text': 'death_' + (w_region) + '_' + (w_country)},
+            paper_bgcolor='#010915',
+            plot_bgcolor='#010915',
+            font=dict(color='white'),
+            xaxis=dict(showline=True, showgrid=True,
+                       linecolor='white', dtick=1),
+            yaxis=dict(showline=True, showgrid=True,
+                       linecolor='white'),
+        )
+    }
+
+
 if __name__ == "__main__":
     app.run_server(debug=True)

@@ -14,8 +14,14 @@ body {
   text-align: center;
 }
 
+#sitelink {
+  text-decoration: none;
+  color: white;
+}
+
 #second-container,
-#third-container {
+#third-container,
+#forth-container {
   display: flex;
   justify-content: center;
 }
@@ -35,19 +41,27 @@ body {
   width: 50%;
 }
 
+.map {
+  width: 100%;
+}
+
 .dropdown {
   color: black;
   margin: 0;
   padding: 5px;
 }
 
-@media screen and (max-width: 500px) {
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
   #second-container,
-  #third-container {
+  #third-container,
+  #forth-container {
     display: block !important;
+    text-align: center;
   }
   .create_container,
-  .two {
+  .two,
+  .map {
     width: 85%;
+    display: inline-block;
   }
 }

@@ -11,8 +11,12 @@ app.layout = html.Div([
     html.Div([
         html.Div([
             html.Div([
-                html.H3('Global Terrorism Database'),
-                html.H5('1970 - 2017')
+                html.H2('Global Terrorism Database'),
+                html.H5('1970 - 2017'),
+                html.A(html.P('by Ethan Lee'),
+                       href='https://github.com/seungwoonlee90',
+                       target='_blank',
+                       id='sitelink')
             ])
         ], id="title")
     ], id="header"),
@@ -54,8 +58,12 @@ app.layout = html.Div([
         html.Div([
             dcc.Graph(id='pie_chart', config={'displayModeBar': 'hover'})
         ], className="create_container two"),
-
-    ], id="third-container")
+    ], id="third-container"),
+    html.Div([
+        html.Div([
+            dcc.Graph(id='map_chart', config={'displayModeBar': 'hover'})
+        ], className="create_container map"),
+    ], id="forth-container")
 ], id="main-container")
 
 
@@ -166,6 +174,53 @@ def select(w_region, w_country, select_year):
                        linecolor='white', dtick=1),
             yaxis=dict(showline=True, showgrid=True,
                        linecolor='white'),
+        )
+    }
+
+
+@app.callback(Output('map_chart', 'figure'),
+              [Input('w_region', 'value')],
+              [Input('w_country', 'value')],
+              [Input('select_years', 'value')])
+def map(w_region, w_country, select_year):
+    terr_list = df[['country_txt', 'latitude', 'longitude']]
+    dict_of_locations = terr_list.set_index(
+        'country_txt')[['latitude', 'longitude']].T.to_dict('dict')
+    terr3 = df.groupby(['region_txt', 'country_txt', 'provstate', 'city', 'iyear', 'latitude', 'longitude'])[
+        ['nkill', 'nwound', 'attacktype1']].sum().reset_index()
+    attack_value = terr3[(terr3['region_txt'] == w_region) & (terr3['country_txt'] == w_country) & (
+        terr3['iyear'] >= select_year[0]) & (terr3['iyear'] <= select_year[1])]['attacktype1'].sum()
+
+    if w_country:
+        zoom_lat = dict_of_locations[w_country]['latitude']
+        zoom_long = dict_of_locations[w_country]['longitude']
+
+    return {
+        'data': [go.Scattermapbox(
+            lon=terr3['longitude'],
+            lat=terr3['latitude'],
+            mode='markers',
+            marker=go.scattermapbox.Marker(size=terr3['nwound'],
+                                           color=terr3['nwound'],
+                                           colorscale='HSV',
+                                           showscale=False,
+                                           sizemode='area',
+                                           opacity=0.3),
+            hoverinfo='text',
+
+        )],
+        'layout': go.Layout(
+            mapbox=dict(
+                accesstoken='#personal key',
+                center=go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_long),
+                style='dark',
+                zoom=5
+            ),
+            margin=dict(r=0, l=0, t=0, b=0),
+            autosize=True,
+            hovermode='x',
+            paper_bgcolor='#010915',
+            plot_bgcolor='#010915',
         )
     }
 

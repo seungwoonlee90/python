@@ -8,6 +8,8 @@ import pandas as pd
 df = pd.read_csv('./modified_globalterrorismdb_0718dist.csv')
 
 app = dash.Dash(__name__, title="terrorism")
+server = app.server
+
 app.layout = html.Div([
     html.Div([
         html.Div([
